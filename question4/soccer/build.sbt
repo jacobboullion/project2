@@ -7,7 +7,7 @@ ThisBuild / organizationName := "revature"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "question5",
+    name := "soccer",
     libraryDependencies += scalaTest % Test,
     libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.7" % "provided",
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
