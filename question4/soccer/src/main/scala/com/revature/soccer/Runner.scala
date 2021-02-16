@@ -79,15 +79,15 @@ object Runner {
         staticDf.show()
 
         //shows thee number of times soccer is used
-        staticDf
-          .select($"data.text")
-          .as[String]
-          .flatMap(_.split(" "))
-          .filter(word => word.equals("soccer"))
-          .groupBy("value")
-          .count()
-          .sort(functions.desc("count"))
-          .show()
+        // staticDf
+        //   .select($"data.text")
+        //   .as[String]
+        //   .flatMap(_.split(" "))
+        //   .filter(word => word.equals("soccer"))
+        //   .groupBy("value")
+        //   .count()
+        //   .sort(functions.desc("count"))
+        //   .show()
 
         //shows the number of times futbol is used
         staticDf
@@ -98,6 +98,15 @@ object Runner {
           .groupBy("value")
           .count()
           .sort(functions.desc("count"))
+          .union(staticDf
+            .select($"data.text")
+            .as[String]
+            .flatMap(_.split(" "))
+            .filter(word => word.equals("soccer"))
+            .groupBy("value")
+            .count()
+            .sort(functions.desc("count"))
+          )
           .show()
 
         staticDf
