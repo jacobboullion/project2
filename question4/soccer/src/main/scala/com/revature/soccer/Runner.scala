@@ -27,11 +27,11 @@ object Runner {
 
         spark.sparkContext.setLogLevel("WARN")
 
-        followerStream(spark)
+        soccerStream(spark)
     }
 
 
-    def followerStream(spark: SparkSession): Unit = {
+    def soccerStream(spark: SparkSession): Unit = {
         import spark.implicits._
 
         val bearerToken = System.getenv(("TWITTER_BEARER_TOKEN"))
@@ -41,7 +41,7 @@ object Runner {
         //run in the background using a Future:
         import scala.concurrent.ExecutionContext.Implicits.global
         // Future {
-        //     tweetStreamToDir(bearerToken, queryString = "?tweet.fields=geo&expansions=geo.place_id")
+        //     tweetStreamToDir(bearerToken, queryString = "?tweet.fields=geo&place.fields=country&expansions=geo.place_id")
         // }
         
         //busy  wait until a file appears in our twitter stream directory
@@ -60,35 +60,6 @@ object Runner {
 
         val streamDf = spark.readStream.schema(staticDf.schema).json("twitterstream")
 
-        //display placenames
-        // streamDf
-        //   .filter(!functions.isnull($"includes.places"))
-        //   .select(functions.element_at($"includes.places", 1)("full_name").as("Place"), ($"data.text").as("Tweet"))
-        //   .writeStream
-        //   .outputMode("append")
-        //   .format("console")
-        //   .option("truncate", false)
-        //   .start()
-        //   .awaitTermination()
-        //val pattern = "\b(\\w*soccer\\w*)\b".r
-
-        // streamDf
-        //   .filter(!functions.isnull($"includes.places"))
-        //   .select(functions.element_at($"includes.places", 1)("full_name").as("Place"), ($"data.text").as("Tweet"))
-        // //   .flatMap(text => {text match {
-        // //       case pattern(handle) => {Some(handle)}
-        // //       case notFound => None
-        // //   }})
-        // //   .groupBy("value")
-        // //   .count()
-        // //   .sort(functions.desc("count"))
-        //   .writeStream
-        //   .outputMode("append")
-        //   .format("console")
-        //   .start()
-        //   .awaitTermination()
-
-
         //Just getting the text
         // streamDf
         //   .select($"data.text")
@@ -102,7 +73,8 @@ object Runner {
 
         //regex to extract twitter handles
         //val pattern = ".*(@\\w+)\\s+.*".r
-        val pattern = "(\\w*soccer\\w*)".r
+        val pattern1 = ".*,\\s(\\w+.*)$".r
+        val pattern2 = "(\\w+.*)$".r
 
         staticDf.show()
 
@@ -130,27 +102,11 @@ object Runner {
 
         staticDf
           .filter(!functions.isnull($"includes.places"))
-          .select(functions.element_at($"includes.places", 1)("full_name").as("Place"))
-          .groupBy("Place")
+          .select(functions.element_at($"includes.places", 1)("country").as("Country"))
+          .groupBy("Country")
           .count()
           .sort(functions.desc("count"))
           .show()
-
-        // streamDf
-        //   .select($"data.text")
-        //   .as[String]
-        //   .flatMap(text => {text match {
-        //       case pattern(handle) => {Some(handle)}
-        //       case notFound => None
-        //   }})
-        //   .groupBy("value")
-        //   .count()
-        //   .sort(functions.desc("count"))
-        //   .writeStream
-        //   .outputMode("complete")
-        //   .format("console")
-        //   .start()
-        //   .awaitTermination()
 
         
 
