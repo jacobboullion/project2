@@ -31,8 +31,10 @@ object RunnerD {
 
         spark.sparkContext.setLogLevel("WARN")
 
+        // uncomment this line in order to stream down data from Twitter to save in folders
         tweetStream(spark)
 
+        // uncomment this to run the analysis on the saved data 
         //sparkSql(spark)
     
     }
@@ -42,10 +44,7 @@ object RunnerD {
 
         val bearerToken = System.getenv(("TWITTER_BEARER_TOKEN"))
 
-        //import scala.concurrent.ExecutionContext.Implicits.global
-        //Future {
-            tweetStreamDir(bearerToken)
-        //}
+        tweetStreamDir(bearerToken)
 
         var start = System.currentTimeMillis()
         var filesFoundInDir = false
@@ -64,10 +63,11 @@ object RunnerD {
 
         val streamDf = spark.readStream.schema(staticDf.schema).json("twitterstream")
 
+        // Used to check that data was streaming down correctly 
         streamDf
             .select($"data.text")
             .writeStream
-            .outputMode("append") // I believe I might want to change this 
+            .outputMode("append") 
             .format("console")
             .start()
             .awaitTermination()
@@ -119,6 +119,7 @@ object RunnerD {
 
     }
 
+    // Used this function in order to filter out the hashtags in the tweets and group them by the most common
     def sparkSql(spark: SparkSession): Unit = {
         import spark.implicits._
 
