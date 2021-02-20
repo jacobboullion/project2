@@ -78,7 +78,7 @@ object RunnerD {
     def tweetStreamDir(
         bearerToken: String,
         dirname: String = "twitterstream",
-        linesPerFile: Int = 10
+        linesPerFile: Int = 50
     ) = {
 
         val httpClient = HttpClients.custom
