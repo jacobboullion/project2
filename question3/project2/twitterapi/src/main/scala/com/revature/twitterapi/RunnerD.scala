@@ -32,10 +32,10 @@ object RunnerD {
         spark.sparkContext.setLogLevel("WARN")
 
         // uncomment this line in order to stream down data from Twitter to save in folders
-        tweetStream(spark)
+        // tweetStream(spark)
 
         // uncomment this to run the analysis on the saved data 
-        //sparkSql(spark)
+        sparkSql(spark)
     
     }
 
@@ -74,7 +74,7 @@ object RunnerD {
 
     }
 
-
+    // Used Filtered Stream in order to only return Tweets that had #America in them
     def tweetStreamDir(
         bearerToken: String,
         dirname: String = "twitterstream",
@@ -119,7 +119,9 @@ object RunnerD {
 
     }
 
-    // Used this function in order to filter out the hashtags in the tweets and group them by the most common
+    // Using filtered data to look for tweet with #America and then filter for only words beginning
+    // with # and order by DESC
+    // wanted to filter out word America, to see more results and added method contains method to filter to do so
     def sparkSql(spark: SparkSession): Unit = {
         import spark.implicits._
 
@@ -129,10 +131,11 @@ object RunnerD {
             .select($"data.text")
             .as[String]
             .flatMap(_.split("\\s+"))
-            .filter(word => word.startsWith("#"))
+            .filter(word => word.startsWith("#") && !word.toLowerCase().contains("america"))
             .groupBy("value")           
             .count()    
             .sort(functions.desc("count"))
+            .withColumnRenamed("value", "Hashtags")
             .show()
 
             df.printSchema()
