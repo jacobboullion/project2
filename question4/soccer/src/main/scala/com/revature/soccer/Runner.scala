@@ -76,7 +76,7 @@ object Runner {
         val pattern1 = ".*,\\s(\\w+.*)$".r
         val pattern2 = "(\\w+.*)$".r
 
-        staticDf.show()
+        //staticDf.show()
 
         //shows thee number of times soccer is used
         // staticDf
@@ -107,6 +107,7 @@ object Runner {
             .count()
             .sort(functions.desc("count"))
           )
+          .withColumnRenamed("value", "Word")
           .show()
 
         staticDf
