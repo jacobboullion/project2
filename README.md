@@ -60,7 +60,7 @@ To-do list:
           .format("console")
           .start()
           .awaitTermination()
-         in order to go through streaming data
+         in order to go through streaming data.
 
 ## Contributors
 Jacob Boullion, Allie Burkeen, Delaney Lekien
