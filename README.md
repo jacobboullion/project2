@@ -36,7 +36,7 @@ To-do list:
 
 ## Usage
 
-> You can run the queries like this 
+> You can run the queries like, 
 >       staticDf
           .filter(!functions.isnull($"includes.places"))
           .select(functions.element_at($"includes.places", 1)("country").as("Country"))
