@@ -32,7 +32,7 @@ To-do list:
 * create a twitter developer profile to get the information on twitter
 * You can use vscode or terminal in order to modify and run the code
 * Once your connected you can start using the queries in the provided code
-* The Twitter information that is used as input to the programs can be found at: https://developer.twitter.com/en
+* The Twitter API that is used as input to the programs and how to make an account can be found at: https://developer.twitter.com/en
 
 ## Usage
 
